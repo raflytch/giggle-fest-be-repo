@@ -5,6 +5,7 @@ export interface User {
   name: string;
   createdAt: Date;
   updatedAt: Date;
+  role: string;
 }
 
 export interface CreateUserInput {

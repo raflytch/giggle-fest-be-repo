@@ -1,22 +1,22 @@
 import { NextFunction, Request, Response } from "express";
-import { CreateUserInput, UpdateUserInput } from "../types/userTypes";
+import { CreateUserInput, UpdateUserInput } from "../../types/userTypes";
 import {
-  getUserById,
-  modifyUser,
-  registerUser,
-  removeUser,
-  getUserByEmail,
+  getUserByIdService,
+  modifyUserService,
+  registerUserService,
+  removeUserService,
+  getUserByEmailService,
   getAllUsersService,
 } from "../services/userService";
 
-export const createUser = async (
+export const createUserController = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
     const input: CreateUserInput = req.body;
-    const user = await registerUser(input);
+    const user = await registerUserService(input);
 
     res.status(201).json({
       success: true,
@@ -82,14 +82,14 @@ export const getAllUsersController = async (
   }
 };
 
-export const getUser = async (
+export const getUserController = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const user = await getUserById(Number(id));
+    const user = await getUserByIdService(Number(id));
     if (!user) {
       res.status(404).json({
         success: false,
@@ -123,7 +123,7 @@ export const getUserByEmailController = async (
       return;
     }
 
-    const user = await getUserByEmail(email as string);
+    const user = await getUserByEmailService(email as string);
     if (!user) {
       res.status(404).json({
         success: false,
@@ -142,7 +142,7 @@ export const getUserByEmailController = async (
   }
 };
 
-export const updateUser = async (
+export const updateUserController = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -150,7 +150,7 @@ export const updateUser = async (
   try {
     const { id } = req.params;
     const input: UpdateUserInput = req.body;
-    const user = await modifyUser(Number(id), input);
+    const user = await modifyUserService(Number(id), input);
     if (!user) {
       res.status(404).json({
         success: false,
@@ -168,14 +168,14 @@ export const updateUser = async (
   }
 };
 
-export const deleteUser = async (
+export const deleteUserController = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const user = await removeUser(Number(id));
+    const user = await removeUserService(Number(id));
     if (!user) {
       res.status(404).json({
         success: false,
