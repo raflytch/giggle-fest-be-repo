@@ -6,13 +6,15 @@ const prisma = new PrismaClient();
 export const createUser = async (
   email: string,
   password: string,
-  name: string
+  name: string,
+  role: string = "user"
 ): Promise<User> => {
   return await prisma.user.create({
     data: {
       email,
       password,
       name,
+      role,
     },
   });
 };
