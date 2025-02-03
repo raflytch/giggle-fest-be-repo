@@ -21,6 +21,18 @@ export const registerUserService = async (
   return await createUser(input.email, hashedPassword, input.name);
 };
 
+export const registerAdminService = async (
+  input: CreateUserInput
+): Promise<User> => {
+  const existingUser = await findUserByEmail(input.email);
+  if (existingUser) {
+    throw new Error("User already exists");
+  }
+
+  const hashedPassword = await bcrypt.hash(input.password, 10);
+  return await createUser(input.email, hashedPassword, input.name, "admin");
+};
+
 export const getAllUsersService = async (
   page: number,
   limit: number

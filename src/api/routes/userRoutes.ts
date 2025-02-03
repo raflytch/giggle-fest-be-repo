@@ -6,6 +6,7 @@ import {
   getUserController,
   getUserByEmailController,
   updateUserController,
+  createAdminController,
 } from "../controllers/userController";
 import {
   authenticateToken,
@@ -27,7 +28,16 @@ router.get(
   authorizeRole(["admin"]),
   getAllUsersController
 );
+
+router.post(
+  "/admin",
+  authenticateToken,
+  authorizeRole(["admin"]),
+  createAdminController
+);
+
 router.post("/", createUserController);
+
 router.patch("/:id", authenticateToken, updateUserController);
 router.delete(
   "/:id",

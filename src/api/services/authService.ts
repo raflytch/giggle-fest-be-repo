@@ -14,10 +14,6 @@ export const loginService = async (email: string, password: string) => {
     throw new Error("Invalid password");
   }
 
-  if (!process.env.JWT_EXPIRED) {
-    throw new Error("JWT_EXPIRED is not defined");
-  }
-
   const token = jwt.sign(
     { id: user.id, email: user.email, role: user.role },
     process.env.JWT_SECRET as string,

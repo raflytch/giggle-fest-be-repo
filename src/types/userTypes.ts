@@ -12,6 +12,7 @@ export interface CreateUserInput {
   email: string;
   password: string;
   name: string;
+  role?: string;
 }
 
 export interface UpdateUserInput {

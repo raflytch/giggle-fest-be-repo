@@ -7,6 +7,7 @@ import {
   removeUserService,
   getUserByEmailService,
   getAllUsersService,
+  registerAdminService,
 } from "../services/userService";
 
 export const createUserController = async (
@@ -22,6 +23,34 @@ export const createUserController = async (
       success: true,
       message: "User created successfully",
       data: user,
+    });
+  } catch (error: Error | any) {
+    if (error.message === "User already exists") {
+      res.status(409).json({
+        success: false,
+        message: "User already exists",
+      });
+    } else {
+      next(error);
+    }
+  }
+};
+
+export const createAdminController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const input: CreateUserInput = req.body;
+    const admin = await registerAdminService(input);
+
+    res.status(201).json({
+      success: true,
+      message: "Admin created successfully",
+      data: {
+        admin,
+      },
     });
   } catch (error: Error | any) {
     if (error.message === "User already exists") {
@@ -54,7 +83,7 @@ export const getAllUsersController = async (
 
     const { users, total } = await getAllUsersService(page, limit);
 
-    const totalUsers = Math.ceil(total / limit);
+    const totalPages = Math.ceil(total / limit);
 
     if (users.length === 0) {
       res.status(404).json({
@@ -73,7 +102,7 @@ export const getAllUsersController = async (
           page,
           limit,
           total,
-          totalUsers,
+          totalPages,
         },
       },
     });
