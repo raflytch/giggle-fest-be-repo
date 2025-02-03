@@ -5,6 +5,8 @@ import {
   modifyUser,
   registerUser,
   removeUser,
+  getUserByEmail,
+  getAllUsersService,
 } from "../services/userService";
 
 export const createUser = async (
@@ -33,6 +35,53 @@ export const createUser = async (
   }
 };
 
+export const getAllUsersController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const page = Number(req.query.page || 1);
+    const limit = Number(req.query.limit || 10);
+
+    if (isNaN(page) || isNaN(limit) || page < 1 || limit < 1) {
+      res.status(400).json({
+        success: false,
+        message: "Invalid page or limit",
+      });
+      return;
+    }
+
+    const { users, total } = await getAllUsersService(page, limit);
+
+    const totalUsers = Math.ceil(total / limit);
+
+    if (users.length === 0) {
+      res.status(404).json({
+        success: false,
+        message: "No users found",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Users retrieved successfully",
+      data: {
+        users,
+        meta: {
+          page,
+          limit,
+          total,
+          totalUsers,
+        },
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getUser = async (
   req: Request,
   res: Response,
@@ -48,6 +97,41 @@ export const getUser = async (
       });
       return;
     }
+    res.status(200).json({
+      success: true,
+      message: "User retrieved successfully",
+      data: user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserByEmailController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { email } = req.query;
+
+    if (!email) {
+      res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+      return;
+    }
+
+    const user = await getUserByEmail(email as string);
+    if (!user) {
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+      return;
+    }
+
     res.status(200).json({
       success: true,
       message: "User retrieved successfully",

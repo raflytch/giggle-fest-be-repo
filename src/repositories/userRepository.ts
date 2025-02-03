@@ -17,6 +17,22 @@ export const createUser = async (
   });
 };
 
+export const getAllUsers = async (
+  page: number,
+  limit: number
+): Promise<{ users: User[]; total: number }> => {
+  const offset = (page - 1) * limit;
+  const [users, total] = await prisma.$transaction([
+    prisma.user.findMany({
+      skip: offset,
+      take: limit,
+    }),
+    prisma.user.count(),
+  ]);
+
+  return { users, total };
+};
+
 export const findUserById = async (id: number): Promise<User | null> => {
   return await prisma.user.findUnique({
     where: { id },

@@ -1,2 +1,39 @@
+# Ignore node_modules (dependencies)
+node_modules/
+
+# Ignore build output (jika menggunakan TypeScript)
+dist/
+
+# Ignore environment variables
 .env
-node_modules
+.env.local
+
+# Ignore file log (jika ada)
+*.log
+
+# Ignore IDE/Editor specific files
+.vscode/
+.idea/
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore Prisma-specific files
+/prisma/migrations/
+/prisma/.env
+
+# Ignore TypeScript build files
+*.tsbuildinfo
+
+# Ignore npm debug logs
+npm-debug.log*
+
+# Ignore package-lock.json (jika Anda menggunakan yarn)
+package-lock.json
+
+# Ignore coverage (jika Anda menggunakan testing)
+coverage/
+
+# Ignore cache
+.cache/

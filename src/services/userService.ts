@@ -6,6 +6,7 @@ import {
   findUserById,
   updateUser,
   deleteUser,
+  getAllUsers,
 } from "../repositories/userRepository";
 
 export const registerUser = async (input: CreateUserInput): Promise<User> => {
@@ -16,6 +17,13 @@ export const registerUser = async (input: CreateUserInput): Promise<User> => {
 
   const hashedPassword = await bcrypt.hash(input.password, 10);
   return await createUser(input.email, hashedPassword, input.name);
+};
+
+export const getAllUsersService = async (
+  page: number,
+  limit: number
+): Promise<{ users: User[]; total: number }> => {
+  return await getAllUsers(page, limit);
 };
 
 export const getUserById = async (id: number): Promise<User | null> => {
