@@ -1,5 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
+import { sendErrorResponse } from "../../utils/errorResponse";
+import { sendInternalErrorResponse } from "../../utils/internalErrorResponse";
 
 export const errorHandler = (
   err: Error,
@@ -11,19 +13,12 @@ export const errorHandler = (
 
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     if (err.code === "P2002") {
-      res.status(409).json({
-        success: false,
-        message: "User already exists",
-      });
+      sendErrorResponse(res, "User already exists", 409);
       return;
     }
   }
 
-  res.status(500).json({
-    success: false,
-    message: "Internal Server Error",
-    error: err.message,
-  });
+  sendInternalErrorResponse(res, err, 500);
 };
 
 export const notFoundHandler = (
@@ -31,8 +26,5 @@ export const notFoundHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  res.status(404).json({
-    success: false,
-    message: "Route not found",
-  });
+  sendErrorResponse(res, "Route not found", 404);
 };

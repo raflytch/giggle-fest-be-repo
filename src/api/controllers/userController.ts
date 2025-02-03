@@ -9,6 +9,8 @@ import {
   getAllUsersService,
   registerAdminService,
 } from "../services/userService";
+import { sendSuccessResponse } from "../../utils/successResponse";
+import { sendErrorResponse } from "../../utils/errorResponse";
 
 export const createUserController = async (
   req: Request,
@@ -19,17 +21,10 @@ export const createUserController = async (
     const input: CreateUserInput = req.body;
     const user = await registerUserService(input);
 
-    res.status(201).json({
-      success: true,
-      message: "User created successfully",
-      data: user,
-    });
+    sendSuccessResponse(res, "User created successfully", user, 201);
   } catch (error: Error | any) {
     if (error.message === "User already exists") {
-      res.status(409).json({
-        success: false,
-        message: "User already exists",
-      });
+      sendErrorResponse(res, "User already exists", 409);
     } else {
       next(error);
     }
@@ -45,19 +40,10 @@ export const createAdminController = async (
     const input: CreateUserInput = req.body;
     const admin = await registerAdminService(input);
 
-    res.status(201).json({
-      success: true,
-      message: "Admin created successfully",
-      data: {
-        admin,
-      },
-    });
+    sendSuccessResponse(res, "Admin created successfully", admin, 201);
   } catch (error: Error | any) {
     if (error.message === "User already exists") {
-      res.status(409).json({
-        success: false,
-        message: "User already exists",
-      });
+      sendErrorResponse(res, "User already exists", 409);
     } else {
       next(error);
     }
@@ -74,10 +60,7 @@ export const getAllUsersController = async (
     const limit = Number(req.query.limit || 10);
 
     if (isNaN(page) || isNaN(limit) || page < 1 || limit < 1) {
-      res.status(400).json({
-        success: false,
-        message: "Invalid page or limit",
-      });
+      sendErrorResponse(res, "Invalid page or limit", 400);
       return;
     }
 
@@ -86,24 +69,17 @@ export const getAllUsersController = async (
     const totalPages = Math.ceil(total / limit);
 
     if (users.length === 0) {
-      res.status(404).json({
-        success: false,
-        message: "No users found",
-      });
+      sendErrorResponse(res, "No users found", 404);
       return;
     }
 
-    res.status(200).json({
-      success: true,
-      message: "Users retrieved successfully",
-      data: {
-        users,
-        meta: {
-          page,
-          limit,
-          total,
-          totalPages,
-        },
+    sendSuccessResponse(res, "Users retrieved successfully", {
+      users,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages,
       },
     });
   } catch (error) {
@@ -120,17 +96,11 @@ export const getUserController = async (
     const { id } = req.params;
     const user = await getUserByIdService(Number(id));
     if (!user) {
-      res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
+      sendErrorResponse(res, "User not found", 404);
       return;
     }
-    res.status(200).json({
-      success: true,
-      message: "User retrieved successfully",
-      data: user,
-    });
+
+    sendSuccessResponse(res, "User retrieved successfully", user);
   } catch (error) {
     next(error);
   }
@@ -145,27 +115,17 @@ export const getUserByEmailController = async (
     const { email } = req.query;
 
     if (!email) {
-      res.status(400).json({
-        success: false,
-        message: "Email is required",
-      });
+      sendErrorResponse(res, "Email is required", 400);
       return;
     }
 
     const user = await getUserByEmailService(email as string);
     if (!user) {
-      res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
+      sendErrorResponse(res, "User not found", 404);
       return;
     }
 
-    res.status(200).json({
-      success: true,
-      message: "User retrieved successfully",
-      data: user,
-    });
+    sendSuccessResponse(res, "User retrieved successfully", user);
   } catch (error) {
     next(error);
   }
@@ -181,17 +141,11 @@ export const updateUserController = async (
     const input: UpdateUserInput = req.body;
     const user = await modifyUserService(Number(id), input);
     if (!user) {
-      res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
+      sendErrorResponse(res, "User not found", 404);
       return;
     }
-    res.status(200).json({
-      success: true,
-      message: "User updated successfully",
-      data: user,
-    });
+
+    sendSuccessResponse(res, "User updated successfully", user);
   } catch (error) {
     next(error);
   }
@@ -206,17 +160,11 @@ export const deleteUserController = async (
     const { id } = req.params;
     const user = await removeUserService(Number(id));
     if (!user) {
-      res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
+      sendErrorResponse(res, "User not found", 404);
       return;
     }
-    res.status(200).json({
-      success: true,
-      message: "User deleted successfully",
-      data: user,
-    });
+
+    sendSuccessResponse(res, "User deleted successfully", user);
   } catch (error) {
     next(error);
   }
