@@ -14,13 +14,14 @@ export const loginService = async (email: string, password: string) => {
     throw new Error("Invalid password");
   }
 
-  const expiresIn = "1d";
-  console.log("expiresIn", expiresIn);
+  if (!process.env.JWT_EXPIRED) {
+    throw new Error("JWT_EXPIRED is not defined");
+  }
 
   const token = jwt.sign(
     { id: user.id, email: user.email, role: user.role },
     process.env.JWT_SECRET as string,
-    { expiresIn }
+    { expiresIn: "12h" }
   );
 
   return { user, token };

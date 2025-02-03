@@ -30,7 +30,7 @@ export const authenticateToken = async (
           return;
         }
 
-        req.user = user; // Tidak ada error sekarang
+        req.user = user;
         next();
       }
     );
@@ -41,7 +41,7 @@ export const authenticateToken = async (
 
 export const authorizeRole = (allowedRoles: string | string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    const userRole = req.user?.role; // Tidak ada error sekarang
+    const userRole = req.user?.role;
 
     if (
       !userRole ||
